@@ -3,14 +3,13 @@
  * YouTube: https://youtube.com/@trungquandev
  * "A bit of fragrance clings to the hand that gives flowers!"
  */
-const MONGODB_URI = 'mongodb+srv://nphung8405:6rVZY7RWlmgd4ICF@cluster0.5jzbx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
-const DATABASE_NAME = 'bebks_ebooks_database'
 
 import {MongoClient, ServerApiVersion} from 'mongodb';
+import { env } from './environment'
 
 let bebksDataInstance = null
 
-const mongoClientInstance = new MongoClient(MONGODB_URI,  {
+const mongoClientInstance = new MongoClient(env.MONGODB_URI,  {
     serverApi: {
         version: ServerApiVersion.v1,
         strict: true,
@@ -20,7 +19,11 @@ const mongoClientInstance = new MongoClient(MONGODB_URI,  {
 
 export const CONNECT_DB = async () => {
     await mongoClientInstance.connect()
-    bebksDataInstance = mongoClientInstance.db(DATABASE_NAME)
+    bebksDataInstance = mongoClientInstance.db(env.DATABASE_NAME)
+}
+
+export const CLOSE_DB = async () => {
+    await mongoClientInstance.close()
 }
 
 export const GET_DB = () => {

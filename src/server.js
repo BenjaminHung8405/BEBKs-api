@@ -5,21 +5,29 @@
  */
 
 import express from 'express'
-import { CONNECT_DB, GET_DB } from '~/config/mongodb'
+import exitHook from 'async-exit-hook'
+import { CONNECT_DB, CLOSE_DB } from '~/config/mongodb'
+import { env } from './config/environment'
+import { APIs_V1 } from './routes/v1'
 
 const START_SERVER = () => {
   const app = express()
 
-  const hostname = 'localhost'
-  const port = 8017
+  // Enable req.body json data
+  app.use(express.json())
 
-  app.get('/', (req, res) => {
-    res.end('<h1>Hello World!</h1><hr>')
+  // Use APIs V1
+  app.use('/v1', APIs_V1)
+
+  app.listen(env.APP_PORT, env.APP_HOST, () => {
+    // eslint-disable-next-line no-console
+    console.log(`Hello Benjamin Hung, I am running at ${ env.APP_HOST }:${ env.APP_PORT }/`)
   })
 
-  app.listen(port, hostname, () => {
-    // eslint-disable-next-line no-console
-    console.log(`Hello Trung Quan Dev, I am running at ${ hostname }:${ port }/`)
+  exitHook(() => {
+    console.log('Disconnecting from MongoDB Cloud Atlas')
+    CLOSE_DB()
+    console.log('Disconnected from MongoDB Cloud Atlas')
   })
 }
 
