@@ -4,7 +4,7 @@
  * "A bit of fragrance clings to the hand that gives flowers!"
  */
 import { StatusCodes } from "http-status-codes"
-import ApiError from "~/utils/ApiError"
+import { boardService } from "~/services/boardService"
 
 const createNew = async (req, res ,next) => {
   try {
@@ -14,6 +14,9 @@ const createNew = async (req, res ,next) => {
     // console.log('req.files', req.files)
     // console.log('req.cookies', req.cookies)
     // console.log('req.jwtDecoded', req.jwtDecoded)
+    const createBoard = await boardService.createNew(req.body)
+
+    res.status(StatusCodes.CREATED).json(createBoard)
   } catch (error) { next(error) }
 }
 
